@@ -1,0 +1,14 @@
+{
+    "node_key": "sh4JfXt6hwBkqjK6K8BGqju4",
+    "secret_key": "fGz7C7Z9zJe93NZH6jKgstMy",
+    "port": 4020,
+    "defaults":{
+        "negative_prompt": "Low Resolution, Bad Lighting, Blurry, Bad Quality, bad writing, misspelled words, gibberish, bad grammar, jpeg artifacts, watermark, username, blurry, bad anatomy, bad hands, error, missing fingers, extra digit, fewer digits, missing arms, long neck",
+        "steps": {
+          "stage_1": 100
+        },
+        "cfg": 11,
+        "seed": -1,
+        "mode": "file"
+    }
+}
