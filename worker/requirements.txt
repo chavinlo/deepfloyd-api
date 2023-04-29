@@ -1,0 +1,8 @@
+diffusers~=0.16
+transformers~=4.28
+safetensors~=0.3
+sentencepiece~=0.1
+accelerate~=0.18
+bitsandbytes~=0.38
+torch~=2.0
+pillow

@@ -2,7 +2,7 @@ import time
 from utilities.general import fail, succ, check_token_existance
 from flask import Response, jsonify
 from werkzeug import Request
-from main import app, clients, socketio, tasks
+from main import app, clients, socketio, tasks, tokens
 import secrets
 from queue import Queue
 
@@ -37,7 +37,7 @@ class httpPipeline():
             token = req.cookies.get("ACCESS_TOKEN")
         else:
             return False
-        return check_token_existance(token=token)
+        return check_token_existance(token, tokens)
     
     def timelimit(self, req: Request) -> bool:
         """

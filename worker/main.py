@@ -28,6 +28,10 @@ with open(CONFIG_PATH) as f:
     config = json.load(f)
     config['gpu'] = gpu_index
 
+hfd = config['HF_HOME'] 
+if hfd is not None:
+    os.makedirs(hfd, exist_ok=True)
+
 request_queue = Queue()
 image_queue = Queue()
 queue_lock = Lock()
@@ -78,3 +82,5 @@ def catch_all(event, data):
 
 print("Connecting...")
 sio.connect(config['server'], auth={'KEY': NODE_KEY}, wait_timeout=5)
+
+image_generator_thread.join()

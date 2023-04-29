@@ -17,5 +17,6 @@ job_id = 0
 from routes import *
 from utilities.socketio_pipes import *
 
+
 if __name__ == '__main__':
     socketio.run(app, port=config['port'], debug=True)

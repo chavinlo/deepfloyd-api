@@ -1,3 +1,5 @@
 {
-    "server": "https://ADDRESS_OF_THE_API_GOES_HERE"
+    "server": "http://IP_OR_DOMAIN:4020",
+    "HF_TOKEN": "HUGGINGFACE_TOKEN_HERE",
+    "HF_HOME": "HUGGINGFACE_CACHE_DIR"
 }

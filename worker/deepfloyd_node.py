@@ -10,6 +10,9 @@ from PIL import Image
 import random
 
 def image_generator(config, request_queue, image_queue):
+
+    hfd = config['HF_HOME']
+    hft = config['HF_TOKEN']
     
     print("Starting engines...")
 
@@ -20,7 +23,9 @@ def image_generator(config, request_queue, image_queue):
 
     text_encoder = T5EncoderModel.from_pretrained(
         "DeepFloyd/IF-I-XL-v1.0",
-        subfolder="text_encoder"
+        subfolder="text_encoder",
+        use_auth_token=hft,
+        cache_dir=hfd
     )
     
     print("Loading Diffusion Pipeline Stage Text...")
@@ -28,8 +33,12 @@ def image_generator(config, request_queue, image_queue):
     txt_pipe = DiffusionPipeline.from_pretrained(
         "DeepFloyd/IF-I-XL-v1.0", 
         text_encoder=text_encoder,
-        unet=None
+        unet=None,
+        use_auth_token=hft,
+        cache_dir=hfd
     )
+
+    txt_pipe.enable_xformers_memory_efficient_attention()
 
     print("Loading Diffusion Pipeline Stage I...")
 
@@ -37,8 +46,11 @@ def image_generator(config, request_queue, image_queue):
         "DeepFloyd/IF-I-XL-v1.0", 
         text_encoder=None, 
         variant="fp16", 
-        torch_dtype=torch.float16, 
+        torch_dtype=torch.float16,
+        use_auth_token=hft,
+        cache_dir=hfd
     ).to(device)
+    #i_pipe.enable_xformers_memory_efficient_attention()
 
     print("Loading Diffusion Pipeline Stage II...")
 
@@ -46,15 +58,21 @@ def image_generator(config, request_queue, image_queue):
         "DeepFloyd/IF-II-L-v1.0", 
         text_encoder=None,
         variant="fp16", 
-        torch_dtype=torch.float16
+        torch_dtype=torch.float16,
+        use_auth_token=hft,
+        cache_dir=hfd
     ).to(device)
+    #ii_pipe.enable_xformers_memory_efficient_attention()
 
     print("Loading Diffusion Pipeline Stage III...")
 
     iii_pipe = DiffusionPipeline.from_pretrained(
         "stabilityai/stable-diffusion-x4-upscaler", 
-        torch_dtype=torch.float16
+        torch_dtype=torch.float16,
+        use_auth_token=hft,
+        cache_dir=hfd
     ).to(device)
+    #iii_pipe.enable_xformers_memory_efficient_attention()
     
     print("Loading Watermark...")
 
@@ -120,9 +138,9 @@ def image_generator(config, request_queue, image_queue):
             pil_image = iii_pipe(prompt, generator=generator, image=image).images
             image = pil_image[0]
             width, height = image.size
-            watermarked_image = Image.new('RGB', (width, height), (255, 255, 255))
-            watermarked_image.paste(image, (0, 0))
-            watermarked_image.paste(watermark, (width - 96, height - 96), watermark)
+            watermarked_image = Image.new('RGBA', (width, height), (255, 255, 255))
+            watermarked_image.paste(image.convert('RGBA'), (0, 0))
+            watermarked_image.paste(watermark.convert('RGBA'), (width - 96, height - 96), watermark)
             
             serving_time = time.time()
             buffered = BytesIO()

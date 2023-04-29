@@ -1,8 +1,9 @@
 from main import socketio, NODE_KEY, clients, tasks
 from flask import request
 from flask_socketio import join_room, leave_room, send, emit, ConnectionRefusedError, disconnect
-from utilities.general import fail, succ
+import utilities
 import logging
+from utilities.general import fail, succ
 
 @socketio.on('connect')
 def connect(auth):
